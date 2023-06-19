@@ -1,112 +1,65 @@
-import React from 'react';
-import {BackHandler, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
 
 function App(): JSX.Element {
+  const [refreshing, setRefreshing] = useState(false);
+  const [items, setItems] = useState([
+    {key: 1, item: 1},
+    {key: 2, item: 2},
+    {key: 3, item: 3},
+    {key: 4, item: 4},
+    {key: 5, item: 5},
+    {key: 6, item: 6},
+    {key: 7, item: 7},
+    {key: 8, item: 8},
+    {key: 9, item: 9},
+    {key: 10, item: 10},
+    {key: 11, item: 11},
+    {key: 12, item: 12},
+    {key: 13, item: 13},
+    {key: 14, item: 14},
+    {key: 15, item: 15},
+    {key: 16, item: 16},
+    {key: 17, item: 17},
+  ]);
+
+  const onRefreshing = () => {
+    setRefreshing(true);
+    setItems([...items, {key: 18, item: 18}]);
+    setRefreshing(false);
+  };
+
   return (
-    <View style={styles.body}>
-      <View style={styles.row1}>
-        <View style={styles.view1}>
-          <Text style={styles.text}>1</Text>
+    <ScrollView
+      style={styles.body}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefreshing} colors={["#ff00ff", "red", "green"]} />
+      }>
+      {items.map(item => (
+        <View style={styles.view}>
+          <Text key={item.key} style={styles.text}>
+            Item {item.item}
+          </Text>
         </View>
-        <View style={styles.view2}>
-          <Text style={styles.text}>2</Text>
-        </View>
-        <View style={styles.view3}>
-          <Text style={styles.text}>3</Text>
-        </View>
-      </View>
-
-      {/* send View */}
-      <View style={styles.row2}>
-        <View style={styles.view4}>
-          <Text style={styles.text}>4</Text>
-        </View>
-        <View style={styles.view5}>
-          <Text style={styles.text}>5</Text>
-        </View>
-      </View>
-
-      {/* Thord View */}
-      <View style={styles.row3}>
-        <View style={styles.view6}>
-          <Text style={styles.text}>6</Text>
-        </View>
-        <View style={styles.view7}>
-          <Text style={styles.text}>7</Text>
-        </View>
-      </View>
-    </View>
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    // backgroundColor: 'white',
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    backgroundColor: 'black',
   },
-  // Rows section
-  row1: {
-    // flex: 1,
-    flexDirection: 'row',
-  },
-
-  row2: {
-    flexDirection: 'column',
-  },
-
-  row3: {
-    flexDirection: 'row',
-    flex: 1
-  },
-  // View section
-  view1: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'pink',
-  },
-  view2: {
-    flex: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'yellow',
-  },
-  view3: {
-    flex: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'hotpink',
-  },
-  view4: {
-    // flex: 1,
-    alignContent: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'green',
-  },
-  view5: {
-    alignContent: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'purple',
-  },
-  view6: {
+  view: {
+    padding: 10,
     backgroundColor: 'cornflowerblue',
-    alignItems: 'stretch',
-    justifyContent: "center",
-    flex: 1,
+    margin: 10,
   },
-  view7: {
-    backgroundColor: 'blue',
-    alignItems: 'stretch',
-    justifyContent: "center",
-    flex: 1,
-  },
-
   text: {
-    textAlign: 'center',
     fontSize: 30,
-    // margin: 10,
+    fontWeight: 'bold',
+    color: 'white',
   },
 });
 
