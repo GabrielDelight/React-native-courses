@@ -43,6 +43,7 @@ function App(): JSX.Element {
   return (
     <SectionList
     inverted
+    keyExtractor={(item, index) => index.toString()}
       sections={DATA}
       renderItem={({item}) => (
         <View>
