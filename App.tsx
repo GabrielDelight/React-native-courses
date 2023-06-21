@@ -1,21 +1,56 @@
 import React, {useState} from 'react';
 import {
-  Button,
+  Alert,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
-  TouchableHighlight,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  ToastAndroid,
   View,
 } from 'react-native';
 
 function App(): JSX.Element {
   const [name, setName] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
+
   const onClickHandler = () => {
-    setSubmitted(!submitted);
+    if (name.length > 3) {
+      setSubmitted(!submitted);
+    } else {
+      // Alert.alert(
+      //   'Warning',
+      //   'Your name must be at least 3 characters long',
+      //   [
+      //     {
+      //       text: "Don't show again",
+      //       onPress: () => console.warn("Don't show again"),
+      //     },
+      //     {text: 'Cancel', onPress: () => console.log('Canceled was pressed')},
+      //     {text: 'OK', onPress: () => console.warn('OK was pressed')},
+      //   ],
+      //   {cancelable: true, onDismiss: () => console.log('Alert dismissed')},
+      // );
+
+      ToastAndroid.show(
+        'Your name must be at least 3 characters long',
+        ToastAndroid.LONG,
+      );
+
+      ToastAndroid.showWithGravity(
+        'Your name must be at least 3 characters long',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER
+      );
+
+
+      ToastAndroid.showWithGravityAndOffset(
+        'Your name must be at least 3 characters long',
+        ToastAndroid.LONG,
+        ToastAndroid.TOP,
+        0,0
+        
+      );
+    }
   };
   return (
     <View style={styles.body}>
@@ -28,27 +63,6 @@ function App(): JSX.Element {
         keyboardType={'default'}
       />
 
-      <TouchableOpacity
-        onPress={onClickHandler}
-        style={styles.button}
-        activeOpacity={0.8}>
-        <Text style={styles.buttonText}>{!submitted ? 'Show' : 'Clear'}</Text>
-      </TouchableOpacity>
-
-      <TouchableHighlight
-        onPress={onClickHandler}
-        style={styles.button}
-        activeOpacity={0.8}
-        underlayColor={'red'}>
-        <Text style={styles.buttonText}>{!submitted ? 'Show' : 'Clear'}</Text>
-      </TouchableHighlight>
-
-      <TouchableWithoutFeedback onPress={onClickHandler} style={styles.button} >
-        <View style={styles.button}>
-          <Text>{!submitted ? 'Show' : 'Clear'}</Text>
-        </View>
-      </TouchableWithoutFeedback>
-
       <Pressable
         onLongPress={onClickHandler}
         delayLongPress={200}
@@ -58,7 +72,7 @@ function App(): JSX.Element {
           {backgroundColor: pressed ? 'white' : 'green'},
           styles.button2,
         ]}>
-        <Text>{!submitted ? 'Show' : 'Clear'}</Text>
+        <Text style={styles.buttonText}>{!submitted ? 'Show' : 'Clear'}</Text>
       </Pressable>
 
       {submitted ? (
@@ -105,7 +119,7 @@ const styles = StyleSheet.create({
     width: 100,
     padding: 10,
     alignItems: 'center',
-    color: "white"
+    color: 'white',
   },
 });
 
