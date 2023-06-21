@@ -27,6 +27,8 @@ function App(): JSX.Element {
       <Modal
         visible={modalVisibility}
         transparent
+        animationType={'slide'}
+        hardwareAccelerated // To improver perfomance speed
         onRequestClose={() => setModalVisibility(false)}>
         <View style={styles.view_modal}>
           <View style={styles.view_wrapper}>
@@ -39,11 +41,10 @@ function App(): JSX.Element {
               </Text>
             </View>
             <Text>
-              <Pressable style={styles.pressable_button} 
-              onPress={() => setModalVisibility(false)}
-              android_ripple={{color: "white"}}
-
-              >
+              <Pressable
+                style={styles.pressable_button}
+                onPress={() => setModalVisibility(false)}
+                android_ripple={{color: 'white'}}>
                 <Text style={styles.pressable_button_text}>OK</Text>
               </Pressable>
             </Text>
@@ -157,13 +158,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 300,
     borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10
-
+    borderBottomRightRadius: 10,
   },
   pressable_button_text: {
     padding: 10,
-    color: "white",
-
+    color: 'white',
   },
 });
 
