@@ -10,6 +10,7 @@ export default function Home({navigation}){
         <Pressable
           onPress={onNavigateHandler}
           android_ripple={{color: 'red'}}
+          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
           style={({pressed}) => [
             {backgroundColor: pressed ? '#ddd' : 'hotpink'},
             styles.button,

@@ -12,6 +12,7 @@ const About = ({navigation}) => {
         <Text style={styles.text}>My name is Gabriel Delight</Text>
         <Pressable
           onPress={onNavigateHandler}
+          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
           style={({pressed}) => [
             {backgroundColor: pressed ? '#ddd' : 'hotpink'},
             styles.button,
