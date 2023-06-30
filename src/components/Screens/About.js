@@ -31,10 +31,12 @@ const About = ({navigation}) => {
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
+      backgroundColor: "black"
     },
     text: {
       fontSize: 25,
       color: '#000',
+      color: "white"
     },
     button: {
       padding: 10,

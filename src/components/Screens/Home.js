@@ -2,7 +2,9 @@ import  React from 'react';
 import {Pressable, View, Text, StyleSheet} from 'react-native';
 export default function Home({navigation}){
     const onNavigateHandler = () => {
-      navigation.navigate('About');
+      // navigation.openDrawer(); // Open side drawer
+      // navigation.closeDrawer(); // Close side drawer
+      navigation.toggleDrawer(); // Toffle drawer
     };
     return (
       <View style={styles.body}>
@@ -15,7 +17,7 @@ export default function Home({navigation}){
             {backgroundColor: pressed ? '#ddd' : 'hotpink'},
             styles.button,
           ]}>
-          <Text style={styles.buttonText}>Visit About Me</Text>
+          <Text style={styles.buttonText}>Toggle drawer</Text>
         </Pressable>
       </View>
     );
@@ -27,10 +29,12 @@ export default function Home({navigation}){
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
+      backgroundColor: "black"
     },
     text: {
       fontSize: 25,
       color: '#000',
+      color: "white"
     },
     button: {
       padding: 10,

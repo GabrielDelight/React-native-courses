@@ -10,57 +10,56 @@ import About from './components/Screens/About';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import {Text} from 'react-native-paper';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 
 // const Tab = createBottomTabNavigator();
 // const Tab = createBottomTabNavigator();
-const Tab = createMaterialTopTabNavigator();
+// const Tab = createMaterialTopTabNavigator();
+const Drawer = createDrawerNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({route}) => ({
-          tabBarIcon: ({focused, size, color}) => {
-            let iconName;
-            if (route.name == 'Home') {
-              iconName = 'home';
-            }
-            if (route.name == 'About') {
-              iconName = 'user';
-            }
-            color = focused ? 'hotpink' : '#fff';
-            size = 20;
-
-            return <FontAwesome name={iconName} size={size} color={color} />;
+      <Drawer.Navigator
+        screenOptions={{
+          drawerPosition: 'left', // Setting drawers position
+          drawerType: 'slide',
+          drawerStyle: {backgroundColor: 'cornflowerblue', width: 250},
+          swipeEdgeWidth: 500, // Swipping almost from the middle of the screen
+          drawerHideStatusBarOnOpen: true, // Hiding the OS Status bar
+          overlayColor: '#00000090', // setting the opacity or background color  of the emty left side of the drawer
+          swipeEnabled: true, // If set to false, it prevents user from swipping or pulling the draer from side
+          headerTitleAlign: "center",
+          headerStyle: {backgroundColor: "cornflowerblue"},
+          headerTitleStyle: {fontSize: 25, fontWeight: "bold"},
+          headerTintColor: "#fff",
+          // header: () => false,
+          drawerLabelStyle: {
+            color: 'white',
+            borderBottomWidth: 5,
+            borderBottomColor: '#fff',
           },
 
-          tabBarActiveBackgroundColor: '#ddd', // Setting active background color
-          tabBarInactiveBackgroundColor: '#fff', // Setting inactive background color
-
-          // tabBarStyle: { backgroundColor: 'cornflowerblue' } ,
-          tabBarShowIcon: false, // show or hide icon
-
-          tabBarLabelStyle: {
-            fontSize: 15,
-            fontWeight: 'bold',
-            color: 'cornflowerblue',
-          }, // Setting styles for label text
-        })}>
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen
+        }}
+        initialRouteName="Home">
+        <Drawer.Screen
+          name="Home"
+          component={Home}
+          options={{
+            title: 'Feeds',
+            drawerIcon: ({focused}) => <FontAwesome name='home' size={30} color={"#fff"} />
+          }}
+        />
+        <Drawer.Screen
           name="About"
           component={About}
           options={{
-            title: 'About me',
-            //  presentation: 'transparentModal'  // MakesStack appears as modal modal
-            headerTintColor: 'white',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-            headerStyle: {backgroundColor: 'black'},
+            title: 'My About',
+            drawerIcon: ({focused}) => <FontAwesome name='user' size={30} color={"#fff"} />
+
           }}
         />
-      </Tab.Navigator>
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 }
