@@ -1,11 +1,13 @@
 import  React from 'react';
 import {Pressable, View, Text, StyleSheet} from 'react-native';
-export default function Home({navigation}){
+export default function Home({navigation, route}){
     const onNavigateHandler = () => {
+      navigation.navigate("About")
       // navigation.openDrawer(); // Open side drawer
       // navigation.closeDrawer(); // Close side drawer
-      navigation.toggleDrawer(); // Toffle drawer
+      // navigation.toggleDrawer(); // Toffle drawer
     };
+
     return (
       <View style={styles.body}>
         <Text style={styles.text}>Screen 1</Text>
@@ -17,8 +19,12 @@ export default function Home({navigation}){
             {backgroundColor: pressed ? '#ddd' : 'hotpink'},
             styles.button,
           ]}>
-          <Text style={styles.buttonText}>Toggle drawer</Text>
+          <Text style={styles.buttonText}>Visit about</Text>
         </Pressable>
+
+        <Text style={styles.text}>
+            {route.params?.message}
+        </Text>
       </View>
     );
   };

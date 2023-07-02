@@ -58,6 +58,7 @@ export default function App() {
             drawerIcon: ({focused}) => <FontAwesome name='user' size={30} color={"#fff"} />
 
           }}
+          initialParams={{firstName: "Gabriel", lastName: "Delight", age: 19}}
         />
       </Drawer.Navigator>
     </NavigationContainer>
