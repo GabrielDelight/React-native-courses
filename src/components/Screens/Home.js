@@ -22,7 +22,7 @@ export default function Home({navigation, route}){
           <Text style={styles.buttonText}>Visit about</Text>
         </Pressable>
 
-        <Text style={styles.text}>
+        <Text style={styles.text2}>
             {route.params?.message}
         </Text>
       </View>
@@ -40,7 +40,14 @@ export default function Home({navigation, route}){
     text: {
       fontSize: 25,
       color: '#000',
-      color: "white"
+      color: "white",
+      fontFamily: "DancingScript-SemiBold"
+    },
+    text2: {
+      fontSize: 25,
+      color: '#000',
+      color: "white",
+      fontFamily: "DancingScript-Bold"
     },
     button: {
       padding: 10,
