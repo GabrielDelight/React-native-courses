@@ -1,5 +1,5 @@
 export type CustomButtonTYpes = {
-    onClickHandler: () => void,
+    onPress: () => void,
     title: string,
     color: string,
     newStyles?: any
