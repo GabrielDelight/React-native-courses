@@ -5,8 +5,7 @@ import CustomButton from '../utils/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function Login({navigation}) {
   const [name, setName] = useState('');
-
-
+  const [age, setAge] = useState('');
 
 
   useEffect(() => {
@@ -14,8 +13,8 @@ export default function Login({navigation}) {
   }, [])
   const getData = async () => {
     try {
-      let uname = await AsyncStorage.getItem('username');
-      if(uname!== null)
+      let userData = await AsyncStorage.getItem('userData');
+      if(userData!== null)
       navigation.navigate("Home") 
     } catch (error) {
       console.warn(error)
@@ -35,9 +34,13 @@ export default function Login({navigation}) {
     } else {
       try {
         Alert.alert('Success', 'Redirecting to home');
+       
+        const uData  = {
+          username: name,
+          age
+        }
+        await AsyncStorage.setItem('userData', JSON.stringify(uData));
         navigation.navigate('Home');
-        await AsyncStorage.setItem('username', name);
-        // console.warn('Hello');
       } catch (error) {
         console.log('Error', error);
       }
@@ -58,6 +61,13 @@ export default function Login({navigation}) {
           style={styles.input}
           onChangeText={value => setName(value)}
           placeholder="Enter your name"
+          placeholderTextColor={'black'}
+        />
+
+<TextInput
+          style={styles.input}
+          onChangeText={value => setAge(value)}
+          placeholder="Enter your age"
           placeholderTextColor={'black'}
         />
         
@@ -94,5 +104,6 @@ const styles = StyleSheet.create({
     marginTop: 50,
     marginBottom: 20,
     textAlign: 'center',
+    fontSize: 28
   },
 });
