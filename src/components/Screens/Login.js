@@ -3,21 +3,57 @@ import {View, Text, Image, Button, StyleSheet, Alert} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import CustomButton from '../utils/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SQLite from 'react-native-sqlite-storage';
+
+const db = SQLite.openDatabase(
+  {
+    name: 'MainDB',
+    location: 'default',
+  },
+  () => {},
+  error => {
+    console.log(error);
+  },
+);
+
 export default function Login({navigation}) {
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
 
-
   useEffect(() => {
-    getData()
-  }, [])
+    createTable();
+    getData();
+  }, []);
+
+  const createTable = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS ' +
+          'Users ' +
+          '(ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Age INTEGER);',
+      );
+    });
+  };
+
   const getData = async () => {
     try {
-      let userData = await AsyncStorage.getItem('userData');
-      if(userData!== null)
-      navigation.navigate("Home") 
+      // let userData = await AsyncStorage.getItem('userData');
+      // if (userData !== null) navigation.navigate('Home');
+      db.transaction((tx) => {
+        tx.executeSql(
+          "SELECT Name, Age FROM Users", 
+          [],
+          (tx, results) => {
+            let len =  results.rows.length
+            if(len > 0){
+              navigation.navigate('Home');
+            }
+          }
+        )
+      })
+
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
     }
   };
 
@@ -34,12 +70,23 @@ export default function Login({navigation}) {
     } else {
       try {
         Alert.alert('Success', 'Redirecting to home');
-       
-        const uData  = {
-          username: name,
-          age
-        }
-        await AsyncStorage.setItem('userData', JSON.stringify(uData));
+
+        // const uData = {
+        //   username: name,
+        //   age,
+        // };
+        // await AsyncStorage.setItem('userData', JSON.stringify(uData));
+
+        await db.transaction(async (tx) => {
+          // await tx.executeSql(
+          //     "INSERT INTO Users (Name, Age) VALUES ('" + name + "'," + age + ")"
+          // );
+          await tx.executeSql(
+              "INSERT INTO Users (Name, Age) VALUES (?,?)",
+              [name, age]
+          );
+      })
+
         navigation.navigate('Home');
       } catch (error) {
         console.log('Error', error);
@@ -57,26 +104,24 @@ export default function Login({navigation}) {
       />
 
       <Text style={styles.text}>Async Storage</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={value => setName(value)}
-          placeholder="Enter your name"
-          placeholderTextColor={'black'}
-        />
+      <TextInput
+        style={styles.input}
+        onChangeText={value => setName(value)}
+        placeholder="Enter your name"
+        placeholderTextColor={'black'}
+      />
 
-<TextInput
-          style={styles.input}
-          onChangeText={value => setAge(value)}
-          placeholder="Enter your age"
-          placeholderTextColor={'black'}
-        />
-        
+      <TextInput
+        style={styles.input}
+        onChangeText={value => setAge(value)}
+        placeholder="Enter your age"
+        placeholderTextColor={'black'}
+      />
 
       <CustomButton title="Login" color="hotpink" onPress={setData} />
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   body: {
@@ -104,6 +149,6 @@ const styles = StyleSheet.create({
     marginTop: 50,
     marginBottom: 20,
     textAlign: 'center',
-    fontSize: 28
+    fontSize: 28,
   },
 });
