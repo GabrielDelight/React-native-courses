@@ -103,7 +103,7 @@ export default function Login({navigation}) {
         }}
       />
 
-      <Text style={styles.text}>Async Storage</Text>
+      <Text style={styles.text}>SQLite Storage</Text>
       <TextInput
         style={styles.input}
         onChangeText={value => setName(value)}
