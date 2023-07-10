@@ -6,6 +6,9 @@ import CustomButton from '../utils/CustomButton';
 import {TextInput} from 'react-native-gesture-handler';
 import SQLite from 'react-native-sqlite-storage';
 
+import {useDispatch, useSelector} from 'react-redux';
+import {setName, setAge, increaseAge} from '../../redux/actions';
+
 const db = SQLite.openDatabase(
   {
     name: 'MainDB',
@@ -18,8 +21,11 @@ const db = SQLite.openDatabase(
 );
 
 export default function Home({navigation, route}) {
-  const [username, setName] = useState('');
-  const [age, setAge] = useState('');
+  // const [name, setName] = useState('');
+  // const [age, setAge] = useState('');
+
+  const {name, age} = useSelector(state => state.userReducer);
+  const dispatch = useDispatch();
 
   const onNavigateHandler = () => {
     navigation.navigate('About');
@@ -30,31 +36,21 @@ export default function Home({navigation, route}) {
   }, []);
   const getData = async () => {
     try {
-      // let rawData = await AsyncStorage.getItem('userData');
-      // console.log(rawData);
-      // let userData = JSON.parse(rawData);
-      // if (userData?.username !== null && userData?.age !== null) {
-      //   setName(userData?.username);
-      //   setAge(userData?.age);
-      // } else navigation.navigate('Login');
+      db.transaction(tx => {
+        tx.executeSql('SELECT Name, Age FROM Users', [], (tx, results) => {
+          let len = results.rows.length;
+          if (len > 0) {
+            let uname = results.rows.item(0).Name;
+            let age = results.rows.item(0).Age;
+            // setName(name)
+            // setAge(age)
+            dispatch(setName(uname));
+            dispatch(setAge(age));
 
-      db.transaction((tx) => {
-        tx.executeSql(
-          "SELECT Name, Age FROM Users", 
-          [],
-          (tx, results) => {
-            let len =  results.rows.length
-            if(len > 0){
-              let username  = results.rows.item(0).Name;
-              let age = results.rows.item(0).Age
-              setName(username)
-              setAge(age)
-
-            }
+            console.warn(results);
           }
-        )
-      })
-
+        });
+      });
     } catch (error) {
       console.warn(error);
     }
@@ -65,18 +61,22 @@ export default function Home({navigation, route}) {
       // await AsyncStorage.mergeItem(
       //   'userData',
       //   JSON.stringify({
-      //     username,
+      //     name,
       //   }),
       // );
 
-      db.transaction((tx) => {
+      db.transaction(tx => {
         tx.executeSql(
-            "UPDATE Users SET Name=?",
-            [username],
-            () => { Alert.alert('Success!', 'Your data has been updated.') },
-            error => { console.log(error) }
-        )
-    })
+          'UPDATE Users SET Name=?',
+          [name],
+          () => {
+            Alert.alert('Success!', 'Your data has been updated.');
+          },
+          error => {
+            console.log(error);
+          },
+        );
+      });
     } catch (error) {
       console.log(error);
     }
@@ -87,14 +87,18 @@ export default function Home({navigation, route}) {
       // await AsyncStorage.removeItem('userData');
       // navigation.navigate('Login');
 
-      db.transaction((tx) => {
+      db.transaction(tx => {
         tx.executeSql(
-          "DELETE FROM Users",
+          'DELETE FROM Users',
           [],
-          () => {navigation.navigate('Login')},
-          (error) => {console.log(error)}
-        )
-      })
+          () => {
+            navigation.navigate('Login');
+          },
+          error => {
+            console.log(error);
+          },
+        );
+      });
     } catch (error) {
       console.log(error);
     }
@@ -111,9 +115,7 @@ export default function Home({navigation, route}) {
 
   return (
     <View style={styles.body}>
-      <Text style={[GlobalFont.CustomFont, styles.text]}>
-        Welcome {username}
-      </Text>
+      <Text style={[GlobalFont.CustomFont, styles.text]}>Welcome {name}</Text>
       <Text style={[GlobalFont.CustomFont, styles.text]}>Your are {age} !</Text>
 
       <CustomButton
@@ -124,11 +126,16 @@ export default function Home({navigation, route}) {
       <TextInput
         style={styles.input}
         placeholder="Update"
-        value={username}
+        value={name}
         onChangeText={value => setName(value)}
       />
       <CustomButton title="UPDATE" color="green" onPress={updateUsername} />
       <CustomButton title="DELETE" color="red" onPress={deleteUsername} />
+      <CustomButton
+        title="Increase Age"
+        color="blue"
+        onPress={() => dispatch(increaseAge())}
+      />
       {/* <CustomButton
         title="LOG OUT AND CLEAR DATA"
         color="red"

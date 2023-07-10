@@ -9,9 +9,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import Login from './components/Screens/Login';
 
 const Stack = createStackNavigator();
-
+import {Provider} from "react-redux"
+import {Store} from "./redux/store"
 export default function App() {
   return (
+    <Provider store={Store}>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
 
@@ -45,5 +47,6 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 }

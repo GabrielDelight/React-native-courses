@@ -5,6 +5,9 @@ import CustomButton from '../utils/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SQLite from 'react-native-sqlite-storage';
 
+import {useDispatch, useSelector} from 'react-redux';
+import {setName, setAge} from '../../redux/actions';
+
 const db = SQLite.openDatabase(
   {
     name: 'MainDB',
@@ -17,8 +20,11 @@ const db = SQLite.openDatabase(
 );
 
 export default function Login({navigation}) {
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
+  const {name, age} = useSelector(state => state.userReducer);
+  const dispatch = useDispatch();
+
+  // const [name, setName] = useState('');
+  // const [age, setAge] = useState('');
 
   useEffect(() => {
     createTable();
@@ -39,19 +45,14 @@ export default function Login({navigation}) {
     try {
       // let userData = await AsyncStorage.getItem('userData');
       // if (userData !== null) navigation.navigate('Home');
-      db.transaction((tx) => {
-        tx.executeSql(
-          "SELECT Name, Age FROM Users", 
-          [],
-          (tx, results) => {
-            let len =  results.rows.length
-            if(len > 0){
-              navigation.navigate('Home');
-            }
+      db.transaction(tx => {
+        tx.executeSql('SELECT Name, Age FROM Users', [], (tx, results) => {
+          let len = results.rows.length;
+          if (len > 0) {
+            navigation.navigate('Home');
           }
-        )
-      })
-
+        });
+      });
     } catch (error) {
       console.warn(error);
     }
@@ -69,14 +70,13 @@ export default function Login({navigation}) {
       ]);
     } else {
       try {
-        Alert.alert('Success', 'Redirecting to home');
-
+        dispatch(setName(name))
+        dispatch(setAge(age))
         // const uData = {
         //   username: name,
         //   age,
         // };
         // await AsyncStorage.setItem('userData', JSON.stringify(uData));
-
         await db.transaction(async (tx) => {
           // await tx.executeSql(
           //     "INSERT INTO Users (Name, Age) VALUES ('" + name + "'," + age + ")"
@@ -94,6 +94,7 @@ export default function Login({navigation}) {
     }
   };
 
+  console.warn(age)
   return (
     <View style={styles.body}>
       <Image
@@ -106,14 +107,14 @@ export default function Login({navigation}) {
       <Text style={styles.text}>SQLite Storage</Text>
       <TextInput
         style={styles.input}
-        onChangeText={value => setName(value)}
+        onChangeText={value => dispatch(setName(value))}
         placeholder="Enter your name"
         placeholderTextColor={'black'}
       />
 
       <TextInput
         style={styles.input}
-        onChangeText={value => setAge(value)}
+        onChangeText={value => dispatch(setAge(value))}
         placeholder="Enter your age"
         placeholderTextColor={'black'}
       />
