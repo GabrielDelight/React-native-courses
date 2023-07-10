@@ -9,44 +9,43 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import Login from './components/Screens/Login';
 
 const Stack = createStackNavigator();
-import {Provider} from "react-redux"
-import {Store} from "./redux/store"
+import {Provider} from 'react-redux';
+import {Store} from './redux/store';
 export default function App() {
   return (
     <Provider store={Store}>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-
-        <Stack.Screen 
-          name='Login'
-          component={Login}
-          options={{
-            header: () => null
-          }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{
-            title: 'Feeds',
-            drawerIcon: ({focused}) => (
-              <FontAwesome name="home" size={30} color={'#fff'} />
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="About"
-          component={About}
-          options={{
-            title: 'My About',
-            drawerIcon: ({focused}) => (
-              <FontAwesome name="user" size={30} color={'#fff'} />
-            ),
-          }}
-          initialParams={{firstName: 'Gabriel', lastName: 'Delight', age: 19}}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              header: () => null,
+            }}
+          />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              title: 'Feeds',
+              drawerIcon: ({focused}) => (
+                <FontAwesome name="home" size={30} color={'#fff'} />
+              ),
+            }}
+          />
+          <Stack.Screen
+            name="About"
+            component={About}
+            options={{
+              title: 'My About',
+              drawerIcon: ({focused}) => (
+                <FontAwesome name="user" size={30} color={'#fff'} />
+              ),
+            }}
+            initialParams={{firstName: 'Gabriel', lastName: 'Delight', age: 19}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </Provider>
   );
 }
