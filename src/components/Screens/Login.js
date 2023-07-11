@@ -94,7 +94,6 @@ export default function Login({navigation}) {
     }
   };
 
-  console.warn(age)
   return (
     <View style={styles.body}>
       <Image

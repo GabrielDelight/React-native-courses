@@ -3,11 +3,11 @@ import {Pressable, View, Text, StyleSheet, Alert} from 'react-native';
 import GlobalFont from '../utils/GlobaslStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomButton from '../utils/CustomButton';
-import {TextInput} from 'react-native-gesture-handler';
+import {FlatList, TextInput} from 'react-native-gesture-handler';
 import SQLite from 'react-native-sqlite-storage';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {setName, setAge, increaseAge} from '../../redux/actions';
+import {setName, setAge, increaseAge, getCountries} from '../../redux/actions';
 
 const db = SQLite.openDatabase(
   {
@@ -24,14 +24,16 @@ export default function Home({navigation, route}) {
   // const [name, setName] = useState('');
   // const [age, setAge] = useState('');
 
-  const {name, age} = useSelector(state => state.userReducer);
+  const {name, age, countries} = useSelector(state => state.userReducer);
   const dispatch = useDispatch();
 
   const onNavigateHandler = () => {
     navigation.navigate('About');
   };
 
+  console.log('countries=>', countries);
   useEffect(() => {
+    dispatch(getCountries());
     getData();
   }, []);
   const getData = async () => {
@@ -46,8 +48,6 @@ export default function Home({navigation, route}) {
             // setAge(age)
             dispatch(setName(uname));
             dispatch(setAge(age));
-
-            console.warn(results);
           }
         });
       });
@@ -123,28 +123,40 @@ export default function Home({navigation, route}) {
         onPress={onNavigateHandler}
         color="hotpink"
       />
-      <TextInput
+
+      <FlatList
+        data={countries}
+        renderItem={({item}) => {
+          return (
+            <View style={styles.countries_body}>
+              <Text style={styles.country}>{item.country}</Text>
+              <Text style={styles.city}>{item.city}</Text>
+            </View>
+          );
+        }}
+      />
+      {/* <TextInput
         style={styles.input}
         placeholder="Update"
         value={name}
         onChangeText={value => setName(value)}
-      />
-      <CustomButton title="UPDATE" color="green" onPress={updateUsername} />
+      /> */}
+      {/* <CustomButton title="UPDATE" color="green" onPress={updateUsername} />
       <CustomButton title="DELETE" color="red" onPress={deleteUsername} />
       <CustomButton
         title="Increase Age"
         color="blue"
         onPress={() => dispatch(increaseAge())}
-      />
+      /> */}
       {/* <CustomButton
         title="LOG OUT AND CLEAR DATA"
         color="red"
         onPress={clearData}
       /> */}
 
-      <Text style={[GlobalFont.CustomFont, styles.text2]}>
+      {/* <Text style={[ styles.text2]}>
         {route.params?.message}
-      </Text>
+      </Text> */}
     </View>
   );
 }
@@ -181,4 +193,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 10,
   },
+  countries_body: {
+    borderWidth: 2,
+    borderColor: "#ddd",
+    padding: 10,
+    margin: 10
+  },
+  country: {
+    fontSize: 30,
+    textAlign: "center"
+  }
+  , 
+  city: {
+    textAlign: "center"
+  }
+
 });

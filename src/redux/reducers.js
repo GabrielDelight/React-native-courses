@@ -1,22 +1,25 @@
-import {SET_USER_AGE, SET_USER_NAME, ICREASE_AGE} from './actions';
+import {SET_USER_AGE, SET_USER_NAME, ICREASE_AGE, GET_COUNTRIES} from './actions';
 
 const initialState = {
-    name: '',
-    age: 0,
-}
+  name: '',
+  age: 0,
+  countries: [],
+};
 
 function userReducer(state = initialState, action) {
-    switch (action.type) {
-        case SET_USER_NAME:
-            return { ...state, name: action.payload };
-        case SET_USER_AGE:
-            return { ...state, age: action.payload };
-        case ICREASE_AGE:
-            return { ...state, age: state.age + 1 };
-       
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case SET_USER_NAME:
+      return {...state, name: action.payload};
+    case SET_USER_AGE:
+      return {...state, age: action.payload};
+    case ICREASE_AGE:
+      return {...state, age: state.age + 1};
+    case GET_COUNTRIES:
+      return {...state, countries: action.payload};
+
+    default:
+      return state;
+  }
 }
 
 export default userReducer;
