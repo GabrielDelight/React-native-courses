@@ -11,6 +11,8 @@ import Login from './components/Screens/Login';
 const Stack = createStackNavigator();
 import {Provider} from 'react-redux';
 import {Store} from './redux/store';
+import Map from './components/Screens/Map';
+import CameraScreen from './components/Screens/Camera';
 export default function App() {
   return (
     <Provider store={Store}>
@@ -44,7 +46,11 @@ export default function App() {
             }}
             initialParams={{firstName: 'Gabriel', lastName: 'Delight', age: 19}}
           />
+        {/* Mao screen */}
+        <Stack.Screen name='Map' component={Map} />
+        <Stack.Screen name='Camera' component={CameraScreen} />
         </Stack.Navigator>
+
       </NavigationContainer>
     </Provider>
   );

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Pressable, View, Text, StyleSheet, Alert} from 'react-native';
+import {Pressable, View, Text, StyleSheet, Alert, TouchableOpacity} from 'react-native';
 import GlobalFont from '../utils/GlobaslStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomButton from '../utils/CustomButton';
@@ -8,6 +8,7 @@ import SQLite from 'react-native-sqlite-storage';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {setName, setAge, increaseAge, getCountries} from '../../redux/actions';
+// import PushNotification from "react-native-push-notification";
 
 const db = SQLite.openDatabase(
   {
@@ -31,7 +32,6 @@ export default function Home({navigation, route}) {
     navigation.navigate('About');
   };
 
-  console.log('countries=>', countries);
   useEffect(() => {
     dispatch(getCountries());
     getData();
@@ -56,82 +56,60 @@ export default function Home({navigation, route}) {
     }
   };
 
-  const updateUsername = async () => {
-    try {
-      // await AsyncStorage.mergeItem(
-      //   'userData',
-      //   JSON.stringify({
-      //     name,
-      //   }),
-      // );
+  const handleNotification = (item, index) => {
+    // navigation.navigate("Map")
+    navigation.navigate("Map")
+    // PushNotification.cancelAllLocalNotifications();
 
-      db.transaction(tx => {
-        tx.executeSql(
-          'UPDATE Users SET Name=?',
-          [name],
-          () => {
-            Alert.alert('Success!', 'Your data has been updated.');
-          },
-          error => {
-            console.log(error);
-          },
-        );
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    // PushNotification.localNotification({
+    //     channelId: "test-channel",
+    //     title: "You clicked on " + item.country,
+    //     message: item.city,
+    //     bigText: item.city + " is one of the largest and most beatiful cities in " + item.country,
+    //     color: "red",
+    //     id: index
+    // });
 
-  const deleteUsername = async () => {
-    try {
-      // await AsyncStorage.removeItem('userData');
-      // navigation.navigate('Login');
+    // PushNotification.localNotificationSchedule({
+    //     channelId: "test-channel",
+    //     title: "Alarm",
+    //     message: "You clicked on " + item.country + " 20 seconds ago",
+    //     date: new Date(Date.now() + 20 * 1000),
+    //     allowWhileIdle: true,
+    // });
+}
 
-      db.transaction(tx => {
-        tx.executeSql(
-          'DELETE FROM Users',
-          [],
-          () => {
-            navigation.navigate('Login');
-          },
-          error => {
-            console.log(error);
-          },
-        );
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // const clearData = async () => {
-  //   try {
-  //     await AsyncStorage.clear();
-  //     navigation.navigate('Login');
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   return (
     <View style={styles.body}>
-      <Text style={[GlobalFont.CustomFont, styles.text]}>Welcome {name}</Text>
+      <Text style={[GlobalFont.CustomFont, styles.text]}>Welcome d {name}</Text>
       <Text style={[GlobalFont.CustomFont, styles.text]}>Your are {age} !</Text>
 
       <CustomButton
         title="Visit about"
         onPress={onNavigateHandler}
         color="hotpink"
-      />
+      />  
+       <CustomButton
+      title="Open camera"
+      onPress={() => navigation.navigate("Camera")}
+      color="hotpink"
+    />
 
       <FlatList
+      // horizontal
+      inverted
         data={countries}
         renderItem={({item}) => {
           return (
+            <TouchableOpacity
+            onPress={(item,index) => { handleNotification(item, index) }}
+            >
             <View style={styles.countries_body}>
               <Text style={styles.country}>{item.country}</Text>
               <Text style={styles.city}>{item.city}</Text>
             </View>
+            </TouchableOpacity>
           );
         }}
       />
