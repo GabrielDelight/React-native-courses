@@ -4,8 +4,9 @@ export default StyleSheet.create({
     CustomFont: {
         fontFamily: "DancingScript-SemiBold"
     },
+    CustomFontBold: {
+        fontFamily: "DancingScript-Bold"
+    },
 
-    CustomButton: {
-        fontFamily: "DancingScript-Bold",
-    }
+
 })

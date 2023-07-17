@@ -2,55 +2,75 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import Home from './components/Screens/Home';
 import About from './components/Screens/About';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
-import Login from './components/Screens/Login';
+import Splash from './components/Screens/Splash';
 
-const Stack = createStackNavigator();
 import {Provider} from 'react-redux';
 import {Store} from './redux/store';
 import Map from './components/Screens/Map';
 import CameraScreen from './components/Screens/Camera';
+
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Done from './components/Screens/Done';
+import ToDo from './components/Screens/ToDo';
+import Tasks from './components/Screens/Tasks';
+
+const Tab = createBottomTabNavigator();
+const HomeTabs = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, size, color}) => {
+          let IconName;
+          if (route.name == 'To-do') IconName = 'clipboard';
+          if (route.name == 'Done') IconName = 'check-circle';
+
+          return <FontAwesome name={IconName} color={color} size={size} />;
+        },
+
+        tabBarActiveTintColor: 'cornflowerblue',
+        tabBarInactiveTintColor: '#ddd',
+        tabBarActiveBackgroundColor: '#ddd',
+        tabBarLabelStyle: {fontSize: 14},
+        header: () => false
+      })}>
+      <Tab.Screen name="To-do" component={ToDo} />
+      <Tab.Screen name="Done" component={Done} />
+    </Tab.Navigator>
+  );
+};
+
+const RootStack = createStackNavigator();
+
 export default function App() {
   return (
     <Provider store={Store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen
-            name="Login"
-            component={Login}
+        <RootStack.Navigator initialRouteName="Splash"
+          screenOptions={{
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: "cornflowerblue",
+            },
+            headerTintColor: "white",
+            headerTitleStyle: {
+              fontSize: 30,
+              fontWeight: "bold"
+            }
+          }}
+        >
+          <RootStack.Screen
+            name="Splash"
+            component={Splash}
             options={{
               header: () => null,
             }}
           />
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{
-              title: 'Feeds',
-              drawerIcon: ({focused}) => (
-                <FontAwesome name="home" size={30} color={'#fff'} />
-              ),
-            }}
-          />
-          <Stack.Screen
-            name="About"
-            component={About}
-            options={{
-              title: 'My About',
-              drawerIcon: ({focused}) => (
-                <FontAwesome name="user" size={30} color={'#fff'} />
-              ),
-            }}
-            initialParams={{firstName: 'Gabriel', lastName: 'Delight', age: 19}}
-          />
-        {/* Mao screen */}
-        <Stack.Screen name='Map' component={Map} />
-        <Stack.Screen name='Camera' component={CameraScreen} />
-        </Stack.Navigator>
-
+          <RootStack.Screen name="My Tasks"  component={HomeTabs} />
+          <RootStack.Screen name="Tasks" component={Tasks} />
+        </RootStack.Navigator>
       </NavigationContainer>
     </Provider>
   );
