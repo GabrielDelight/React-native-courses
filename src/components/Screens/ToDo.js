@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -12,9 +12,11 @@ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import {useDispatch, useSelector} from 'react-redux';
 import {setTask, setTaskID} from '../../redux/actions';
 import CustomFontBold from '../utils/GlobaslStyles';
+import CheckBox from '@react-native-community/checkbox';
 
 export default function ToDo({navigation}) {
   const {tasks} = useSelector(state => state.tasksReducer);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -41,39 +43,64 @@ export default function ToDo({navigation}) {
     AsyncStorage.setItem('Tasks', JSON.stringify(filteredTasks))
       .then(() => {
         Alert.alert('Deleted', 'Alert deleted');
-        dispatch(setTask(filteredTasks))
+        dispatch(setTask(filteredTasks));
       })
       .catch(err => console.log(err));
+  };
+
+  const checkTask = async (id, newValue) => {
+    let index = tasks.findIndex(task => task.ID === id);
+    if (index > -1) {
+      try {
+        let newTask = [...tasks];
+        newTask[index].Done = newValue;
+        await AsyncStorage.setItem('Tasks', JSON.stringify(newTask));
+        dispatch(setTask(newTask));
+        Alert.alert('Success', 'Task updated successfully');
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   return (
     <View style={styles.body}>
       {/* Flay list */}
       <FlatList
-        data={tasks}
+        data={tasks.filter(task => task.Done === false)}
         renderItem={({item}) => (
           <TouchableOpacity
             style={styles.list}
             onPress={() => {
               dispatch(setTaskID(item.ID));
-              navigation.navigate('Tasks');
+              navigation.navigate('Tasks', {id: item.ID});
             }}>
+            <View
+              style={[{backgroundColor: item.Color}, styles.color_line]}></View>
+            <View>
+              <CheckBox
+                tintColors={{true: 'green'}}
+                disabled={false}
+                value={item.Done}
+                onValueChange={newValue => checkTask(item.ID, newValue)}
+              />
+            </View>
             <View style={styles.relative_row}>
               <Text
                 style={[CustomFontBold.CustomFontBold, styles.title]}
                 numberOfLines={1}>
                 {item.Title}
               </Text>
-              <Text style={[CustomFontBold.CustomFont, styles.subtitle]}>
+              <Text style={[CustomFontBold.CustomFont, styles.subtitle]}  numberOfLines={1} >
                 {item.Description}
               </Text>
-
-              <TouchableOpacity
-                style={styles.trash}
-                onPress={() => deleteTask(item.ID)}>
-                <FontAwesome5Icon name="trash" color={'red'} size={25} />
-              </TouchableOpacity>
             </View>
+
+            <TouchableOpacity
+              style={styles.trash}
+              onPress={() => deleteTask(item.ID)}>
+              <FontAwesome5Icon name="trash" color={'red'} size={25} />
+            </TouchableOpacity>
           </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
@@ -117,8 +144,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 7,
     backgroundColor: 'white',
-    justifyContent: 'center',
+    // justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
     elevation: 5,
+    borderRadius: 10,
   },
   title: {
     fontSize: 25,
@@ -137,7 +167,15 @@ const styles = StyleSheet.create({
   },
   trash: {
     position: 'absolute',
-    top: 19,
+    top: 29,
     right: 20,
+  },
+
+  color_line: {
+    width: 20,
+    height: 100,
+    // backgroundColor: "#ddd",
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
   },
 });

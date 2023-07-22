@@ -16,6 +16,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Done from './components/Screens/Done';
 import ToDo from './components/Screens/ToDo';
 import Tasks from './components/Screens/Tasks';
+import NotificationScreen from './components/Screens/Notification';
 
 const Tab = createBottomTabNavigator();
 const HomeTabs = () => {
@@ -24,7 +25,7 @@ const HomeTabs = () => {
       screenOptions={({route}) => ({
         tabBarIcon: ({focused, size, color}) => {
           let IconName;
-          if (route.name == 'To-do') IconName = 'clipboard';
+          if (route.name == 'To-do') IconName = 'yin-yang';
           if (route.name == 'Done') IconName = 'check-circle';
 
           return <FontAwesome name={IconName} color={color} size={size} />;
@@ -70,6 +71,8 @@ export default function App() {
           />
           <RootStack.Screen name="My Tasks"  component={HomeTabs} />
           <RootStack.Screen name="Tasks" component={Tasks} />
+          <RootStack.Screen name="Camera" component={CameraScreen} />
+          <RootStack.Screen name="Notification" component={NotificationScreen} />
         </RootStack.Navigator>
       </NavigationContainer>
     </Provider>

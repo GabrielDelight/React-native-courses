@@ -1,12 +1,17 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect, useRef} from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
-import CustomButton from '../utils/CustomButton';
-export default function CameraScreen() {
+import {useDispatch, useSelector} from 'react-redux';
+
+export default function CameraScreen({navigation, route}) {
   const devices = useCameraDevices();
   const device = devices.back;
-
   const camera = useRef(null);
+  const {tasks, taskID} = useSelector(state => state.tasksReducer);
+  console.log(taskID);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     async function getPermissionFunction() {
@@ -18,19 +23,35 @@ export default function CameraScreen() {
       const cameraPermission = await Camera.getCameraPermissionStatus();
       const microphonePermission = await Camera.getMicrophonePermissionStatus();
       console.log(cameraPermission);
-
-    
     }
     getPermissionFunction();
   }, []);
+
   const onTakePhotoHandler = async () => {
     const photo = await camera.current.takePhoto({
-        flash: 'on',
-      });
+      flash: 'on',
+    });
 
-      console.log(photo.path)
-    
-  }
+    updatePhoto(taskID, photo.path);
+    console.log(photo.path);
+  };
+
+  const updatePhoto = (id, image) => {
+    let index = tasks.findIndex(task => task.ID === route.params.id);
+    if (index > -1) {
+      let newTask = [...tasks];
+      newTask[index].Image = image;
+      AsyncStorage.setItem('Tasks', JSON.stringify(newTask))
+        .then(() => {
+          Alert.alert('Success', 'Image set successful');
+          
+          navigation.goBack();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  };
 
   if (device == null)
     return (
@@ -40,23 +61,37 @@ export default function CameraScreen() {
     );
   return (
     <View>
-      <Text>Camera</Text>
       <Camera
-        style={styes.absoluteFill}
+        style={styles.absoluteFill}
         device={device}
         isActive={true}
         photo={true}
         ref={camera}
       />
-    {/* <CustomButton onPess={() => console.warn("warning..")} color={"pink"} title="Capture" /> */}
-    <Button onPress={onTakePhotoHandler} title='Snap' />
+
+      <TouchableOpacity style={styles.button} onPress={onTakePhotoHandler}>
+        <FontAwesome5Icon name="camera" color="white" size={30} />
+      </TouchableOpacity>
     </View>
   );
 }
 
-const styes = StyleSheet.create({
+const styles = StyleSheet.create({
   absoluteFill: {
-    width: 400,
-    height: 500,
+    width: '100%',
+    height: '100%',
+  },
+
+  button: {
+    width: 100,
+    height: 100,
+    borderWidth: 5,
+    borderColor: '#fff',
+    position: 'absolute',
+    bottom: 20,
+    left: 160,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 50,
   },
 });
