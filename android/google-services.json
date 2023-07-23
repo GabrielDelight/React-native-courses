@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:73150783905:android:a1e1560614a4595d99abe0",
         "android_client_info": {
-          "package_name": "com.myproject"
+          "package_name": "com.gabrieldelight.todolist"
         }
       },
       "oauth_client": [
